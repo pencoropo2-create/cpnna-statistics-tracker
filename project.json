@@ -1,0 +1,20 @@
+{
+  "overview": "Aplicación web responsiva para el registro estadístico semanal del CPNNA, con Formato 1 de trámites, Formato 2 demográfico, panel de control con gráficos y exportación a Excel.",
+  "features": [
+    "Registro diario de más de 35 trámites y medidas con sumas automáticas",
+    "Desglose demográfico por edad y género con validación cruzada",
+    "Panel de control con indicadores, gráficos y alertas de auditoría",
+    "Exportación del consolidado semanal a Excel con vista previa",
+    "Acceso privado con aprobación del administrador",
+    "Captura rápida en tablets y teléfonos Android"
+  ],
+  "category": "productivity",
+  "tags": [
+    "estadisticas",
+    "institucional",
+    "formularios",
+    "reportes",
+    "salud-y-servicios-sociales"
+  ],
+  "last_updated": "2026-11-12T17:13:01.037Z"
+}

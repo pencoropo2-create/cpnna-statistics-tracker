@@ -1,0 +1,172 @@
+// Version: 4.0.0
+type AccessControlState__201339279 =
+  {
+    var adminAssigned : Bool;
+    userRoles : Map__230067015<Principal, UserRole__91647283>
+  };
+type AgeRange__647841790 =
+  {#adolescente14a17; #adulto18mas; #nino0a5; #nino12a13; #nino6a11};
+type ApprovalStatus__982498703 = {#approved; #pending; #rejected};
+type Data__44217153<K, V> = {var count : Nat__227979830; kvs : [var ?(K, V)]};
+type DemographicCount__871924657 =
+  {
+    ageRange : AgeRange__647841790;
+    count : Nat;
+    day : WeekDay__1038598668;
+    gender : Gender__94681853
+  };
+type Gender__94681853 = {#femenino; #masculino};
+type IndicatorCount__519597678 =
+  {
+    count : Nat;
+    day : WeekDay__1038598668;
+    indicator : ManagementIndicator__805203751
+  };
+type Int__616954475 = Int;
+type Int__789852381 = Int__616954475;
+type Internal__283199666<K, V> =
+  {children : [var ?Node__204828119<K, V>]; data : Data__44217153<K, V>};
+type Invite__556842471 =
+  {
+    createdAt : Time__918999370;
+    createdBy : Principal;
+    expiresAt : ?Time__918999370;
+    maxUses : ?Nat;
+    name : Text;
+    var redemptions : [Redemption__1040467832];
+    var revoked : Bool
+  };
+type InvitesState__511333982 =
+  {var invites : Map__230067015<Text, Invite__556842471>};
+type Leaf__598469445<K, V> = {data : Data__44217153<K, V>};
+type ManagementIndicator__805203751 =
+  {#entrevistas; #expedientesAperturados; #seguimientoCausa};
+type Map__230067015<K, V> = Map__405889023<K, V>;
+type Map__405889023<K, V> = Map__603270868<K, V>;
+type Map__603270868<K, V> =
+  {var root : Node__204828119<K, V>; var size : Nat__227979830};
+type Nat__227979830 = Nat__920180692;
+type Nat__920180692 = Nat;
+type NewActor__769816496 =
+  {
+    accessControlState : AccessControlState__201339279;
+    approvalState : UserApprovalState__266451338;
+    invitesState : InvitesState__511333982;
+    weeks :
+      {
+        var nextId : Nat;
+        weeks :
+          Map__230067015<Nat,
+                          {
+                            createdAt : Int;
+                            demographics :
+                              [{
+                                 ageRange :
+                                   {
+                                     #adolescente14a17;
+                                     #adulto18mas;
+                                     #nino0a5;
+                                     #nino12a13;
+                                     #nino6a11
+                                   };
+                                 count : Nat;
+                                 day :
+                                   {
+                                     #domingo;
+                                     #jueves;
+                                     #lunes;
+                                     #martes;
+                                     #miercoles;
+                                     #sabado;
+                                     #viernes
+                                   };
+                                 gender : {#femenino; #masculino}
+                               }];
+                            id : Nat;
+                            indicatorCounts :
+                              [{
+                                 count : Nat;
+                                 day :
+                                   {
+                                     #domingo;
+                                     #jueves;
+                                     #lunes;
+                                     #martes;
+                                     #miercoles;
+                                     #sabado;
+                                     #viernes
+                                   };
+                                 indicator :
+                                   {
+                                     #entrevistas;
+                                     #expedientesAperturados;
+                                     #seguimientoCausa
+                                   }
+                               }];
+                            owner : Principal;
+                            startDate : Text;
+                            tramiteCounts :
+                              [{
+                                 count : Nat;
+                                 day :
+                                   {
+                                     #domingo;
+                                     #jueves;
+                                     #lunes;
+                                     #martes;
+                                     #miercoles;
+                                     #sabado;
+                                     #viernes
+                                   };
+                                 tramiteId : Nat
+                               }];
+                            updatedAt : Int
+                          }>
+      }
+  };
+type Node__204828119<K, V> =
+  {#internal : Internal__283199666<K, V>; #leaf : Leaf__598469445<K, V>};
+type OldActor__512397517 = {};
+type Redemption__1040467832 = {at : Time__918999370; user : Principal};
+type Time__418528263 = Int__789852381;
+type Time__918999370 = Time__418528263;
+type Timestamp__301639476 = Int;
+type TramiteCount__442177120 =
+  {count : Nat; day : WeekDay__1038598668; tramiteId : TramiteId__19402481};
+type TramiteId__19402481 = Nat;
+type UserApprovalState__266451338 =
+  {var approvalStatus : Map__230067015<Principal, ApprovalStatus__982498703>};
+type UserRole__91647283 = {#admin; #guest; #user};
+type WeekDay__1038598668 =
+  {#domingo; #jueves; #lunes; #martes; #miercoles; #sabado; #viernes};
+type WeekId__983574736 = Nat;
+type WeekRecord__676722173 =
+  {
+    createdAt : Timestamp__301639476;
+    demographics : [DemographicCount__871924657];
+    id : WeekId__983574736;
+    indicatorCounts : [IndicatorCount__519597678];
+    owner : Principal;
+    startDate : Text;
+    tramiteCounts : [TramiteCount__442177120];
+    updatedAt : Timestamp__301639476
+  };
+{
+  "00000000_000000" : (_old : OldActor__512397517) -> NewActor__769816496
+}
+actor  {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__230067015<Principal, UserRole__91647283>
+    };
+  stable approvalState :
+    {
+      var approvalStatus :
+        Map__230067015<Principal, ApprovalStatus__982498703>
+    };
+  stable invitesState :
+    {var invites : Map__230067015<Text, Invite__556842471>};
+  stable weeks :
+    {var nextId : Nat; weeks : Map__230067015<Nat, WeekRecord__676722173>}
+};

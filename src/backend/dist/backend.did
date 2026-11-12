@@ -1,0 +1,285 @@
+type WeekTotals = 
+ record {
+   hasDiscrepancy: bool;
+   perAgeRange: vec record {
+                      AgeRange;
+                      nat;
+                    };
+   perDayTramites: vec record {
+                         WeekDay;
+                         nat;
+                       };
+   perDayUsuarios: vec record {
+                         WeekDay;
+                         nat;
+                       };
+   perTramite: vec record {
+                     TramiteId;
+                     nat;
+                   };
+   totalDemografico: nat;
+   totalTramites: nat;
+   totalUsuarios: nat;
+ };
+type WeekSummary = 
+ record {
+   hasDiscrepancy: bool;
+   id: WeekId;
+   startDate: text;
+   totalTramites: nat;
+   totalUsuarios: nat;
+   updatedAt: Timestamp;
+ };
+type WeekRecord = 
+ record {
+   createdAt: Timestamp;
+   demographics: vec DemographicCount;
+   id: WeekId;
+   indicatorCounts: vec IndicatorCount;
+   owner: principal;
+   startDate: text;
+   tramiteCounts: vec TramiteCount;
+   updatedAt: Timestamp;
+ };
+type WeekInput = 
+ record {
+   demographics: vec DemographicCount;
+   indicatorCounts: vec IndicatorCount;
+   startDate: text;
+   tramiteCounts: vec TramiteCount;
+ };
+type WeekId = nat;
+type WeekDay = 
+ variant {
+   domingo;
+   jueves;
+   lunes;
+   martes;
+   miercoles;
+   sabado;
+   viernes;
+ };
+type Value = 
+ variant {
+   "bool": bool;
+   float: float64;
+   "int": int;
+   "nat": nat;
+   "null";
+   "text": text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserApprovalInfo = 
+ record {
+   "principal": principal;
+   status: ApprovalStatus;
+ };
+type TramiteId = nat;
+type TramiteCount = 
+ record {
+   count: nat;
+   day: WeekDay;
+   tramiteId: TramiteId;
+ };
+type TramiteCategory = 
+ variant {
+   aperturaCausa;
+   autorizacionViajeInternacional;
+   autorizacionViajeNacional;
+   constatacion;
+   medidaCuidado;
+   medidaResponsabilidad;
+   otra;
+   psicologia;
+   remision;
+ };
+type Tramite = 
+ record {
+   category: TramiteCategory;
+   code: text;
+   id: TramiteId;
+   name: text;
+   order: nat;
+ };
+type Timestamp = int;
+type Time = int;
+type SendReportResult = 
+ variant {
+   err: text;
+   ok;
+ };
+type Result__1 = 
+ variant {
+   err: Error;
+   ok;
+ };
+type Result = 
+ record {
+   hasMore: bool;
+   rows: vec vec Cell;
+ };
+type Redemption = 
+ record {
+   at: Time;
+   user: principal;
+ };
+type RedeemResult = 
+ variant {
+   alreadyMember;
+   blocked;
+   expired;
+   invalid;
+   joined;
+   revoked;
+   usedUp;
+ };
+type ManagementIndicator = 
+ variant {
+   entrevistas;
+   expedientesAperturados;
+   seguimientoCausa;
+ };
+type InviteStatus = 
+ variant {
+   expired;
+   invalid;
+   revoked;
+   usedUp;
+   valid;
+ };
+type InviteInfo = 
+ record {
+   code: text;
+   createdAt: Time;
+   createdBy: principal;
+   expiresAt: opt Time;
+   maxUses: opt nat;
+   name: text;
+   redemptions: vec Redemption;
+   revoked: bool;
+ };
+type IndicatorCount = 
+ record {
+   count: nat;
+   day: WeekDay;
+   indicator: ManagementIndicator;
+ };
+type Gender = 
+ variant {
+   femenino;
+   masculino;
+ };
+type Error = 
+ variant {
+   AmbiguousAttribute: record {
+                         field: text;
+                         sources: vec text;
+                       };
+   FrontendOriginMismatch: record {
+                             expected: vec text;
+                             got: text;
+                           };
+   FrontendOriginsNotConfigured;
+   MalformedCandid;
+   MissingField: text;
+   MixedSsoSources: record {
+                      otherKeys: vec text;
+                      ssoKeys: vec text;
+                    };
+   NoAttributes;
+   Stale: record {ageNs: nat;};
+   UnknownNonce;
+   UntrustedSsoSource: record {domain: text;};
+ };
+type DemographicCount = 
+ record {
+   ageRange: AgeRange;
+   count: nat;
+   day: WeekDay;
+   gender: Gender;
+ };
+type Cell = 
+ record {
+   name: text;
+   value: Value;
+ };
+type AuditAlert = 
+ record {
+   day: WeekDay;
+   format1Total: nat;
+   format2Total: nat;
+ };
+type ApprovalStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type AgeRange = 
+ variant {
+   adolescente14a17;
+   adulto18mas;
+   nino0a5;
+   nino12a13;
+   nino6a11;
+ };
+type AccessSummary = 
+ record {
+   isAdmin: bool;
+   isApproved: bool;
+   status: AccessRequestStatus;
+ };
+type AccessRequestStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+service : {
+  _initialize_access_control: () -> ();
+  _internet_identity_sign_in_finish: () -> (Result__1);
+  _internet_identity_sign_in_start: () -> (blob);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  checkInvite: (code: text) -> (InviteStatus) query;
+  createInvite: (name: text, maxUses: opt nat, expiresAt: opt Time) -> (text);
+  /// Crea una semana estadística nueva para el usuario que la captura.
+  createWeek: (input: WeekInput) -> (WeekRecord);
+  /// Elimina una semana del usuario que la captura.
+  deleteWeek: (id: WeekId) -> (bool);
+  execute: (qJson: text) -> (Result) query;
+  /// Devuelve el resumen de acceso del usuario que consulta.
+  getAccessSummary: () -> (AccessSummary) query;
+  getApiDoc: () -> (text) query;
+  getCallerUserRole: () -> (UserRole) query;
+  /// Lee una semana del usuario que la captura.
+  getWeek: (id: WeekId) -> (opt WeekRecord) query;
+  /// Devuelve las alertas de auditoría de una semana.
+  getWeekAlerts: (id: WeekId) -> (vec AuditAlert) query;
+  /// Calcula los totales de una semana.
+  getWeekTotals: (id: WeekId) -> (opt WeekTotals) query;
+  isCallerAdmin: () -> (bool) query;
+  isCallerApproved: () -> (bool) query;
+  listApprovals: () -> (vec UserApprovalInfo) query;
+  /// Devuelve los indicadores de gestión soportados.
+  listIndicators: () -> (vec ManagementIndicator) query;
+  listInvites: () -> (vec InviteInfo) query;
+  /// Devuelve el catálogo completo de trámites y medidas.
+  listTramites: () -> (vec Tramite) query;
+  /// Lista los resúmenes de las semanas del usuario que la captura.
+  listWeeks: () -> (vec WeekSummary) query;
+  redeemInvite: (code: text) -> (RedeemResult);
+  removeApproval: (user: principal) -> ();
+  requestApproval: () -> ();
+  revokeInvite: (code: text) -> ();
+  schema: () -> (text) query;
+  /// Envía el consolidado semanal por correo institucional.
+  sendWeekReportEmail: (id: WeekId, recipient: text) -> (SendReportResult);
+  setApproval: (user: principal, status: ApprovalStatus) -> ();
+  /// Actualiza una semana existente del usuario que la captura.
+  updateWeek: (id: WeekId, input: WeekInput) -> (opt WeekRecord);
+}
